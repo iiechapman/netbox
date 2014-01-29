@@ -25,18 +25,22 @@ using namespace std;
  * Contact: iiechapman\@gmail.com
  */
 
+enum dir {dirUp = 0,dirDown,dirLeft,dirRight};
 
 class Box{
 public:
-                        Box();
-    void                Render( void );
-    void                Update( Uint32 delta);
+                            Box();
+    void                    Render( void );
+    void                    Update( Uint32 delta);
     
-    SDL_Rect            rect;
-    SDL_Color           color;
-    string              name;
-    int                 clientNumber;
-    static              SDL_Renderer* renderer;
+    SDL_Rect                rect;
+    SDL_Color               color;
+    string                  name;
+    static SDL_Renderer*    renderer;
+    static float            xOff,yOff;
+    bool                    isShooting;
+    int                     GUID;
+    dir                     direction;
     
 private:
 };

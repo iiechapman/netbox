@@ -7,13 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4E8D6CBC18919D6800442372 /* bullet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E8D6CBA18919D6800442372 /* bullet.cpp */; };
 		4E9618A0188F03F0007C5567 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E96189F188F03F0007C5567 /* main.cpp */; };
-		4E9618AD188F03FD007C5567 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E9618AC188F03FD007C5567 /* main.cpp */; };
 		4E9618B4188F04A9007C5567 /* Box.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E9618B2188F04A9007C5567 /* Box.cpp */; };
 		4E9618B8188F72C3007C5567 /* SDL2_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9618B5188F72C3007C5567 /* SDL2_net.framework */; };
 		4E9618B9188F72C3007C5567 /* SDL2_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9618B5188F72C3007C5567 /* SDL2_net.framework */; };
-		4E9618BA188F72C3007C5567 /* SDL2_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9618B6188F72C3007C5567 /* SDL2_ttf.framework */; };
-		4E9618BB188F72C3007C5567 /* SDL2_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9618B6188F72C3007C5567 /* SDL2_ttf.framework */; };
 		4E9618BC188F72C3007C5567 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9618B7188F72C3007C5567 /* SDL2.framework */; };
 		4E9618BD188F72C3007C5567 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9618B7188F72C3007C5567 /* SDL2.framework */; };
 /* End PBXBuildFile section */
@@ -40,14 +38,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4E8D6CBA18919D6800442372 /* bullet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bullet.cpp; sourceTree = "<group>"; };
+		4E8D6CBB18919D6800442372 /* bullet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bullet.h; sourceTree = "<group>"; };
 		4E96189C188F03F0007C5567 /* SDLNetBoxGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SDLNetBoxGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E96189F188F03F0007C5567 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		4E9618AA188F03FD007C5567 /* SDLBoxGameServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SDLBoxGameServer; sourceTree = BUILT_PRODUCTS_DIR; };
-		4E9618AC188F03FD007C5567 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		4E9618B2188F04A9007C5567 /* Box.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Box.cpp; sourceTree = "<group>"; };
 		4E9618B3188F04A9007C5567 /* Box.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Box.h; sourceTree = "<group>"; };
 		4E9618B5188F72C3007C5567 /* SDL2_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2_net.framework; sourceTree = "<group>"; };
-		4E9618B6188F72C3007C5567 /* SDL2_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2_ttf.framework; sourceTree = "<group>"; };
 		4E9618B7188F72C3007C5567 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -57,7 +55,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E9618BC188F72C3007C5567 /* SDL2.framework in Frameworks */,
-				4E9618BA188F72C3007C5567 /* SDL2_ttf.framework in Frameworks */,
 				4E9618B8188F72C3007C5567 /* SDL2_net.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -67,7 +64,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E9618BD188F72C3007C5567 /* SDL2.framework in Frameworks */,
-				4E9618BB188F72C3007C5567 /* SDL2_ttf.framework in Frameworks */,
 				4E9618B9188F72C3007C5567 /* SDL2_net.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -106,7 +102,6 @@
 		4E9618AB188F03FD007C5567 /* SDLBoxGameServer */ = {
 			isa = PBXGroup;
 			children = (
-				4E9618AC188F03FD007C5567 /* main.cpp */,
 			);
 			path = SDLBoxGameServer;
 			sourceTree = "<group>";
@@ -115,10 +110,11 @@
 			isa = PBXGroup;
 			children = (
 				4E9618B5188F72C3007C5567 /* SDL2_net.framework */,
-				4E9618B6188F72C3007C5567 /* SDL2_ttf.framework */,
 				4E9618B7188F72C3007C5567 /* SDL2.framework */,
 				4E9618B2188F04A9007C5567 /* Box.cpp */,
 				4E9618B3188F04A9007C5567 /* Box.h */,
+				4E8D6CBA18919D6800442372 /* bullet.cpp */,
+				4E8D6CBB18919D6800442372 /* bullet.h */,
 			);
 			name = Shared;
 			sourceTree = "<group>";
@@ -193,6 +189,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E9618A0188F03F0007C5567 /* main.cpp in Sources */,
+				4E8D6CBC18919D6800442372 /* bullet.cpp in Sources */,
 				4E9618B4188F04A9007C5567 /* Box.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -201,7 +198,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4E9618AD188F03FD007C5567 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -333,10 +329,12 @@
 		4E9618AF188F03FD007C5567 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				FRAMEWORK_SEARCH_PATHS = (
 					/Library/Frameworks,
 					/Users/evanchapman/Documents/Dev/Xcode/SDLNetBoxGameClient,
 				);
+				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -364,10 +362,12 @@
 		4E9618B0188F03FD007C5567 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				FRAMEWORK_SEARCH_PATHS = (
 					/Library/Frameworks,
 					/Users/evanchapman/Documents/Dev/Xcode/SDLNetBoxGameClient,
 				);
+				GCC_C_LANGUAGE_STANDARD = c11;
 				HEADER_SEARCH_PATHS = (
 					/opt/local/include,
 					/usr/include,
@@ -407,6 +407,7 @@
 				4E9618A5188F03F0007C5567 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4E9618AE188F03FD007C5567 /* Build configuration list for PBXNativeTarget "SDLBoxGameServer" */ = {
 			isa = XCConfigurationList;
@@ -415,6 +416,7 @@
 				4E9618B0188F03FD007C5567 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -10,6 +10,8 @@
 using namespace std;
 
 SDL_Renderer* Box::renderer = 0;
+float         Box::xOff = 0;
+float         Box::yOff = 0;
 
 Box::Box(){
     color.r = 155;
@@ -19,18 +21,26 @@ Box::Box(){
     
     rect.x = 10;
     rect.y = 10;
-    rect.w = 100;
-    rect.h = 100;
+    rect.w = 300;
+    rect.h = 300;
     
+    direction = dirRight;
+    isShooting = false;
 }
 
 
 void Box::Render()
 {
+    
+    SDL_Rect finalRect = rect;
+    
+    finalRect.x -= xOff;
+    finalRect.y -= yOff;
+    
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
-    SDL_RenderFillRect(renderer, &rect);
+    SDL_RenderFillRect(renderer, &finalRect);
     
     SDL_SetRenderDrawColor(renderer,255,255,255,255);
-    SDL_RenderDrawRect(renderer, &rect);
+    SDL_RenderDrawRect(renderer, &finalRect);
 }
 
