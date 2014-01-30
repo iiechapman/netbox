@@ -11,7 +11,9 @@
 
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <SDL2_image/SDL_image.h>
 #include <string>
+
 using namespace std;
 
 
@@ -41,6 +43,18 @@ public:
     bool                    isShooting;
     int                     GUID;
     dir                     direction;
+    SDL_Texture*            texture;
+    
+    
+private:
+    
+    int                     speed;
+    int                     speedFast;
+    int                     speedNormal;
+    int                     speedSlow;
+    
+    bool                    isBoosting;
+    
     
 private:
 };

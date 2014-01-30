@@ -26,6 +26,7 @@ Box::Box(){
     
     direction = dirRight;
     isShooting = false;
+    
 }
 
 

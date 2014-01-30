@@ -16,7 +16,6 @@ using namespace std;
 
 #define MAX_SOCKETS 20
 #define MAX_CLIENTS 20
-#define MAX_MESSAGES 20
 #define SEND_MAX 100000
 #define MAX_STARS 5000
 #define MAX_BULLETS 100000
@@ -34,20 +33,18 @@ using namespace std;
 
 struct SdlApplication
 {
+    //Methods
 	SdlApplication();
 	~SdlApplication();
 	
 	enum APP_STATE
-	{
-		APP_OK = 0,
-		APP_FAILED = 1
-	};
+	{ APP_OK = 0,APP_FAILED = 1};
 	
 	int init(int width, int height);
-
+    
 	void destroy();
 	int run(int width, int height);
-
+    
 	void onEvent(SDL_Event* ev);
     void HandleKeys( void );
     void Update( Uint32 delta );
@@ -55,7 +52,7 @@ struct SdlApplication
     
     void ShootBullet( int x , int y , dir direction , bool friendly , SDL_Color color);
     void CheckBulletCollisions( void );
-    void CheckBulletBounds( void );
+    void CheckBounds( void );
     
     void CalculateFrameDistance( void );
     
@@ -70,18 +67,18 @@ struct SdlApplication
     void ListenToServer( void );
     void SendToServer( void );
     
-    void ConvertMessageToAction( string msg );
-
+    void ConvertMessageToAction( string msg );//Takes rcvd msg and turns to action
     
-    SDL_Window *win;
+    
+    //App Members
+    SDL_Window *win;//SDL window
 	SDL_Renderer *renderer;///<Rendering frame
-    
 	bool _running;///<Used to determine if app is looping
-
+    string userPrompt;///<Captures user selection when prompted
     
-    IPaddress ip;
     
-    int numMessages = 0;
+    //Network Members
+    IPaddress ip;///<Blank IP holder
     
     bool isServer = false;///<Flag if running server
     bool isClient = false;///<Flag if connecting as client
@@ -93,68 +90,45 @@ struct SdlApplication
     TCPsocket client[MAX_CLIENTS];///<Array of client sockets
     bool      clientFree[MAX_CLIENTS];///<Array of flags to tell if client socket free
     
-    int GUID = 0;
+    int GUID = 0;///<ID to handle network messages
     
     string userName;///<Used for players name in game
-    
-    string currentName ="";
-    
-    float farLeft = 0;
-    float farRight = 0;
-    float farBottom = 0;
-    float farTop = 0;
-    float farWidth, farHeight;
-    
-    double scale,finalScale;
-    
     string rcvMsg;///<Used to capture received data
-    string sndMsg[MAX_MESSAGES];///<Used to send data
+    string sndMsg[10];///<Used to send data
 
-    bool deleteBox = false;
-    int deadBox = 0;
-    
-    bool shootPressed = false;
-    
-    int clientNumber;
+    int clientNumber;///<Indicates which client you are on server
     int totalClients = 0;///<Number of clients on server
-    int currentBox = 0;
-
-    int TOTAL_BULLETS = 1000;
-    
-    int totalBoxes = 0;
-    
-    float distance;
-    
-    float finalXOff,finalYOff;
-    float xOff,yOff;
+    int currentBox = 0;///<Indicates currently selected box from server
     bool isConnected;///<Flag used to determine if connected to server
-    bool isConnecting;///<Flag used to determine if connecting to server
-
-    string userPrompt;///<Captures user selection when prompted
     
-    int speedNormal = 60;
-    int speedFast = 100;
-    bool isBoosting = false;
-    int boxSpeed = speedNormal;
+    
+    //Render Members
+    double scale,finalScale;//<Used to zoom view
+    int TOTAL_BULLETS = 1000;///<Handles how many bullets available
+    int totalBoxes = 0;///<Count of boxes (controlled by clients) in game
+    float distance;///<Indicates how far apart all boxes are
+    float finalXOff,finalYOff;///<Used to transition to offset values
+    float xOff,yOff;///<Offsets determined by distance between boxes
+
+    
+    //Logic Members
+    
+    int speedNormal = 60;///<Normal rate of movement
+    int speedFast = 100;///<Faster rate of movement when player holds boost button
+    bool isBoosting = false;///<Flag for if player is boosting
+    int boxSpeed = speedNormal;///<Current speed of player
     
     Box* box[MAX_CLIENTS];///<Array of boxes on screen
-    Box* playerBox = 0;///<Pointer to players box
+    bullet* bullets[MAX_BULLETS];///<Array of bullets on screen
+    int availableBullet = 0;///<Index of last available bullet
+    bullet* stars[MAX_STARS];///<Array of stars on screen
     
-    Box* nullBox;
-    
-    Box* leftBox = nullBox;
-    Box* rightBox = nullBox;
-    Box* topBox = nullBox;
-    Box* bottomBox = nullBox;
-    
-    bullet* bullets[MAX_BULLETS];
-    
-    bullet* stars[MAX_STARS];
-    
-    int availableBullet =0;
-    dir playerDir = dirUp;
-    bool changeDir = true;
-    
+    Box* nullBox;///<Null Box used for when a box is yet to be made
+    Box* playerBox = nullBox;///<Pointer to players box
+    Box* leftBox = nullBox;///<Points to leftmost box
+    Box* rightBox = nullBox;///<Points to rightmost box
+    Box* topBox = nullBox;///<Points to topmost box
+    Box* bottomBox = nullBox;///<Points to bottommost box
 };
 
 SdlApplication::SdlApplication() :
@@ -187,17 +161,18 @@ int SdlApplication::init(int width, int height)
     cout << setw(42) << "---------------------------" << endl;
     cout << endl << endl << endl;
     
+    
+initInternet:{
     cout << "Connecting to internet ..." << endl;
     if ( SDLNet_Init() !=-1){
         cout << "Connected to internet." << endl;
     } else {
         cout << "Could not connect to internet.";
     }
+}
     
-    cout << "Please enter your user name: " << endl;
-    cin.clear();
-    getline(cin,userName);
     
+promptUser:{
     //Connect to server, or setup as server
     cout << "Press enter to connect to server, or type 1 to host server..." << endl;
     
@@ -212,6 +187,10 @@ int SdlApplication::init(int width, int height)
         isServer = false;
         isClient = true;
         
+        cout << "Please enter your user name: " << endl;
+        cin.clear();
+        getline(cin,userName);
+        
         cout << "Enter IP address of server (press enter for localhost)" << endl;
         userPrompt = "";
         cin.clear();
@@ -222,7 +201,10 @@ int SdlApplication::init(int width, int height)
         }
         
     }
+}
     
+connectToServer:{
+    //Attempt to connect to Server
     if (isClient)
     {
         cout << "Attempting to connect to " << userPrompt << endl;
@@ -238,6 +220,8 @@ int SdlApplication::init(int width, int height)
             cout << "Could not setup server..." << endl;
         }
     }
+}
+ 
     
     //Connect to/Listen on server port
     /*
@@ -246,18 +230,26 @@ int SdlApplication::init(int width, int height)
      */
     server = SDLNet_TCP_Open(&ip);
     
+    
+clearSockets:{
     //Clear out entire client socket set
     for (int i = 0 ; i < MAX_CLIENTS ; i++){
         client[i] = NULL;
         box[i] = NULL;
         clientFree[i] = true;
     }
+}
     
+    
+gameInit:{
+    //Create NullBox
     nullBox = new Box();
     nullBox->xOff = 0;
     
+    //Set renderers
     Box::renderer = renderer;
     bullet::Box::renderer = renderer;
+    
     
     //Clear out bullets
     for (int i = 0 ; i < MAX_BULLETS ; i++ )
@@ -265,10 +257,7 @@ int SdlApplication::init(int width, int height)
         bullets[i] = NULL;
     }
     
-
-
-    
-    
+}
     
     //Server init
     if (isServer){
@@ -279,10 +268,10 @@ int SdlApplication::init(int width, int height)
         
         
         //add server listening socket
-        if ( server ){
+        if ( server != NULL ){
             SDLNet_TCP_AddSocket(serverSocketSet, server);
             isConnected = true;
-    
+            
         } else{
             cout << "Server not listening..." << endl;
             _running = false;
@@ -329,7 +318,7 @@ int SdlApplication::init(int width, int height)
         
     }
     
-
+    
     Box::renderer = renderer;
     
     if (isClient){
@@ -443,13 +432,13 @@ int SdlApplication::run(int width, int height)
 	
 	while (_running)
 	{
-    
+        
         if ( server ){
             isConnected = true;
         } else {
             isConnected = false;
         }
-
+        
         while (SDL_PollEvent(&ev))
         {
             onEvent(&ev);
@@ -461,12 +450,12 @@ int SdlApplication::run(int width, int height)
         
         if (isClient)
         {
-        CheckBulletCollisions();
-        CheckBulletBounds();
+            CheckBulletCollisions();
+            CheckBounds();
         }
         NetworkUpdate();
         
-
+        
         
 		Render();
 		
@@ -508,12 +497,6 @@ void SdlApplication::onEvent(SDL_Event* ev)
 				_running = false;
 			}
 		}
-            
-        case SDL_MOUSEBUTTONDOWN:
-        {
-        
-        }
-            
 	}
 }
 
@@ -523,21 +506,21 @@ void SdlApplication::Render()
     //finalScale = 1;
     
     SDL_RenderSetScale(renderer,finalScale,finalScale);
-
+    
     
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
     SDL_RenderClear(renderer);
     
     if (isClient)
     {
-    //Render all stars
-    for ( int i = 0 ; i < MAX_STARS ; i++ )
-    {
-        if (stars[i] != NULL )
+        //Render all stars
+        for ( int i = 0 ; i < MAX_STARS ; i++ )
         {
-            stars[i]->Render();
+            if (stars[i] != NULL )
+            {
+                stars[i]->Render();
+            }
         }
-    }
     }
     
     //Render all bullets
@@ -561,7 +544,7 @@ void SdlApplication::Render()
             box[i]->Render();
         }
     }
-
+    
     
     if (isClient){
         playerBox->Render();
@@ -575,131 +558,81 @@ void SdlApplication::HandleKeys( void  )
 {
     if (isClient)
     {
-    const Uint8 *state = SDL_GetKeyboardState(NULL);
-    
-    if (SDL_GetMouseState(NULL, NULL) == SDL_BUTTON_LEFT || SDL_GetMouseState(NULL, NULL) == SDL_BUTTON_LEFT && SDL_BUTTON_RIGHT)
-    {
-        if (isClient){
-                shootPressed = true;
+        const Uint8 *state = SDL_GetKeyboardState(NULL);
+        
+        if (SDL_GetMouseState(NULL, NULL) == SDL_BUTTON_LEFT || SDL_GetMouseState(NULL, NULL) == SDL_BUTTON_LEFT && SDL_BUTTON_RIGHT)
+        {
+            if (isClient){
                 ShootBullet(
                             playerBox->rect.x + playerBox->rect.w/2,
                             playerBox->rect.y + playerBox->rect.h/2 , playerBox->direction,
                             true,playerBox->color);
                 playerBox->isShooting = true;
                 sndMsg[0] =  sndMsg[0] + "shoot.yes" + ";";
-            
+                
             } else {
                 playerBox->isShooting = false;
                 sndMsg[0] =  sndMsg[0] + "shoot.no" + ";";
             }
-    } else {
-        if (isClient)
-        {
-            shootPressed = false;
-            playerBox->isShooting = false;
-            sndMsg[0] =  sndMsg[0] + "shoot.no" + ";";
-        }
-    }
-
-    if ( state[ SDL_SCANCODE_W ] ) {
-        if (isClient)
-        {
-            playerBox->rect.y-=boxSpeed;
-            if (changeDir){
-                playerBox->direction = dirUp;
-                sndMsg[0] =  sndMsg[0] + "direction." + std::to_string(playerBox->direction) + ";";
+        } else {
+            if (isClient)
+            {
+                playerBox->isShooting = false;
+                sndMsg[0] =  sndMsg[0] + "shoot.no" + ";";
             }
-            sndMsg[0] =  sndMsg[0] + "y." + std::to_string(playerBox->rect.y) + ";";
-            
         }
-    }
-    
-    
+        
+        if ( state[ SDL_SCANCODE_W ] ) {
+            if (isClient)
+            {
+                playerBox->rect.y-=boxSpeed;
+                    playerBox->direction = dirUp;
+                sndMsg[0] =  sndMsg[0] + "y." + std::to_string(playerBox->rect.y) + ";";
+                
+            }
+        }
+        
+        
         if ( state[ SDL_SCANCODE_F ] ) {
             SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN);
         }
-    
-    if ( state[ SDL_SCANCODE_S ] ) {
-        if (isClient)
-        {
-        playerBox->rect.y+=boxSpeed;
-            if (changeDir){
-            playerBox->direction = dirDown;
-                sndMsg[0] =  sndMsg[0] + "direction." + std::to_string(playerBox->direction) + ";";
+        
+        if ( state[ SDL_SCANCODE_S ] ) {
+            if (isClient)
+            {
+                playerBox->rect.y+=boxSpeed;
+                sndMsg[0] =  sndMsg[0] + "y." + std::to_string(playerBox->rect.y) + ";";
             }
-        sndMsg[0] =  sndMsg[0] + "y." + std::to_string(playerBox->rect.y) + ";";
         }
-    }
-    
-    if ( state[ SDL_SCANCODE_A ] ) {
-        if (isClient)
-        {
-            if (changeDir){
-            playerBox->direction = dirLeft;
-                sndMsg[0] =  sndMsg[0] + "direction." + std::to_string(playerBox->direction) + ";";
+        
+        if ( state[ SDL_SCANCODE_A ] ) {
+            if (isClient)
+            {
+                playerBox->rect.x-=boxSpeed;
+                sndMsg[0] =  sndMsg[0] + "x." + std::to_string(playerBox->rect.x) + ";";
             }
-            playerBox->rect.x-=boxSpeed;
-            sndMsg[0] =  sndMsg[0] + "x." + std::to_string(playerBox->rect.x) + ";";
         }
-    }
-    
-    if ( state[ SDL_SCANCODE_D ] ) {
-        if (isClient)
-        {
-        playerBox->rect.x+=boxSpeed;
-            if (changeDir){
-                playerBox->direction = dirRight;
-                sndMsg[0] =  sndMsg[0] + "direction." + std::to_string(playerBox->direction) + ";";
+        
+        if ( state[ SDL_SCANCODE_D ] ) {
+            if (isClient)
+            {
+                playerBox->rect.x+=boxSpeed;
+                sndMsg[0] =  sndMsg[0] + "x." + std::to_string(playerBox->rect.x) + ";";
             }
-        sndMsg[0] =  sndMsg[0] + "x." + std::to_string(playerBox->rect.x) + ";";
         }
-    }
-    
-    if ( state[ SDL_SCANCODE_LSHIFT ] ) {
-        isBoosting = true;
-    } else {
-        isBoosting = false;
-    }
-
-    if (isBoosting) {
-        boxSpeed = speedFast;
-    } else {
-        boxSpeed = speedNormal;
-    }
-
-        if (SDL_GetMouseState(NULL, NULL) == SDL_BUTTON_RIGHT)
-        {
-            changeDir = false;
+        
+        if ( state[ SDL_SCANCODE_LSHIFT ] ) {
+            isBoosting = true;
         } else {
-            changeDir = true;
+            isBoosting = false;
         }
-    
-//    if ( state[ SDL_SCANCODE_SPACE ] ) {
-//        if (isClient){
-//            if (!shootPressed)
-//            {
-//            shootPressed = true;
-//            ShootBullet(
-//                        playerBox->rect.x + playerBox->rect.w/2,
-//                        playerBox->rect.y + playerBox->rect.h/2 , playerBox->direction,
-//                        true);
-//            playerBox->isShooting = true;
-//            sndMsg[0] =  sndMsg[0] + "shoot.yes" + ";";
-//            } else {
-//            playerBox->isShooting = false;
-//            sndMsg[0] =  sndMsg[0] + "shoot.no" + ";";
-//            }
-//        }
-//    } else {
-//        if (isClient)
-//        {
-//            shootPressed = false;
-//            playerBox->isShooting = false;
-//            sndMsg[0] =  sndMsg[0] + "shoot.no" + ";";
-//        }
-//        
-//    }
-}
+        
+        if (isBoosting) {
+            boxSpeed = speedFast;
+        } else {
+            boxSpeed = speedNormal;
+        }
+    }
 }
 
 
@@ -769,23 +702,23 @@ void SdlApplication::CheckForNewClient()
                 char finalMsg[1000];
                 sprintf(finalMsg, "accept.%i" , totalClients);
                 rcvMsg = finalMsg;
-    
+                
                 
                 SDLNet_TCP_Send(client[freeSpot], rcvMsg.c_str(), static_cast<unsigned int>( rcvMsg.length() ));
                 
                 cout << "Sent message: " << rcvMsg << endl;
                 cout << "Accepted new client..." << endl;
                 cout << "Total Clients: " << totalClients << endl;
-            
+                
             }else {
                 cout << "Rejected client, no free spots..." << endl;
                 
                 rcvMsg  = "NO";
                 
-    
+                
                 TCPsocket tempClient = SDLNet_TCP_Accept(server);
                 
-                 SDLNet_TCP_Send(tempClient, rcvMsg.c_str(), static_cast<unsigned int>( rcvMsg.length()));
+                SDLNet_TCP_Send(tempClient, rcvMsg.c_str(), static_cast<unsigned int>( rcvMsg.length()));
                 
                 SDLNet_TCP_Close(tempClient);
             }
@@ -800,7 +733,7 @@ void SdlApplication::CheckForClientData()
     //cout << "Checking for client activity..." << endl;
     
     int activeSockets =  SDLNet_CheckSockets(clientSocketSet, 10);
-
+    
     if ( activeSockets > 0 ) {
         for (int i = 0 ; i < totalClients ; i++ )
         {
@@ -824,7 +757,6 @@ void SdlApplication::CheckForClientData()
                     box[i+1] = NULL;
                     client[i] = NULL;
                     clientFree[i] = true;
-                    deleteBox = true;
                     totalClients--;
                     cout << "Total Clients: " << totalClients << endl;
                 } else{
@@ -845,37 +777,37 @@ void SdlApplication::BroadcastToClients()
     
     if (totalClients > 0)
     {
-    for (int i  = 0 ; i < MAX_CLIENTS ; i++)
-    {
-        if (box[i] != NULL){
-        sndMsg[0] = sndMsg[0] + "box." + std::to_string(i)  + ";alive.0" +
-            ";name." + box[i]->name +
-            ";x." + std::to_string(box[i]->rect.x) +
-            ";y." + std::to_string(box[i]->rect.y) +
-            ";red." + std::to_string(box[i]->color.r) +
-            ";green." + std::to_string(box[i]->color.g) +
-            ";blue." + std::to_string(box[i]->color.b) +
-            ";direction." + std::to_string(box[i]->direction) +
-            ";";
-            
-            if (box[i]->isShooting)
-            {
-                sndMsg[0] = sndMsg[0] + "shoot.yes;";
+        for (int i  = 0 ; i < MAX_CLIENTS ; i++)
+        {
+            if (box[i] != NULL){
+                sndMsg[0] = sndMsg[0] + "box." + std::to_string(i)  + ";alive.0" +
+                ";name." + box[i]->name +
+                ";x." + std::to_string(box[i]->rect.x) +
+                ";y." + std::to_string(box[i]->rect.y) +
+                ";red." + std::to_string(box[i]->color.r) +
+                ";green." + std::to_string(box[i]->color.g) +
+                ";blue." + std::to_string(box[i]->color.b) +
+                ";direction." + std::to_string(box[i]->direction) +
+                ";";
+                
+                if (box[i]->isShooting)
+                {
+                    sndMsg[0] = sndMsg[0] + "shoot.yes;";
+                } else {
+                    sndMsg[0] = sndMsg[0] + "shoot.no;";
+                }
+                
             } else {
-                sndMsg[0] = sndMsg[0] + "shoot.no;";
+                sndMsg[0] = sndMsg[0] + "box." + std::to_string(i) + ";dead.0;";
             }
-            
-        } else {
-            sndMsg[0] = sndMsg[0] + "box." + std::to_string(i) + ";dead.0;";
         }
-    }
-    
+        
         
         //Broadcast message back to all clients
         for (int clientNum = 0 ; clientNum < totalClients ; clientNum++)
         {
             if (clientFree[clientNum] == false){
-            int length = static_cast<unsigned int>(strlen( sndMsg[0].c_str() ) + 1 );
+                int length = static_cast<unsigned int>(strlen( sndMsg[0].c_str() ) + 1 );
                 SDLNet_TCP_Send(client[clientNum], sndMsg[0].c_str(),length);
             }
         }
@@ -903,7 +835,7 @@ void SdlApplication::ListenToServer( void )
             {
                 cout << "Server disconnected..." << endl;
                 _running = false;
-
+                
             } else {
                 //cout << "Received message: " << endl;
                 //cout << msg << endl;
@@ -923,12 +855,12 @@ void SdlApplication::SendToServer( void )
         ";green." + std::to_string(playerBox->color.g) +
         ";blue." + std::to_string(playerBox->color.b) +
         ";name." + playerBox->name  +  ";end;";
-
+        
         //cout << "send mess: " << sndMsg[0].c_str() << endl;
-    
-    int length = static_cast<unsigned int>(strlen( sndMsg[0].c_str() ) + 1 );
-    SDLNet_TCP_Send(server, sndMsg[0].c_str(),length);
-    
+        
+        int length = static_cast<unsigned int>(strlen( sndMsg[0].c_str() ) + 1 );
+        SDLNet_TCP_Send(server, sndMsg[0].c_str(),length);
+        
     }
     sndMsg[0] = "";
 }
@@ -1012,7 +944,7 @@ void SdlApplication::ConvertMessageToAction( string msg )
             if (currentAction == "name")
             {
                 if (currentBox != GUID){
-                box[currentBox]->name = currentValue;
+                    box[currentBox]->name = currentValue;
                 }
                 currentAction = "";
                 currentValue = "";
@@ -1021,8 +953,8 @@ void SdlApplication::ConvertMessageToAction( string msg )
             if (currentAction == "x")
             {
                 if (currentBox != GUID){
-                intValue = atoi(currentValue.c_str());
-                box[currentBox]->rect.x = intValue;
+                    intValue = atoi(currentValue.c_str());
+                    box[currentBox]->rect.x = intValue;
                 }
                 currentAction = "";
                 currentValue = "";
@@ -1035,30 +967,30 @@ void SdlApplication::ConvertMessageToAction( string msg )
                 //cout << currentValue << endl;
                 intValue = atoi(currentValue.c_str());
                 
-               
+                
                 if (currentBox != GUID){
-                switch (intValue) {
-                    case 0:
-                        box[currentBox]->direction = dirUp;
-                        break;
-                     
-                    case 1:
-                        box[currentBox]->direction = dirDown;
-                        break;
-                        
-                        
-                    case 2:
-                        box[currentBox]->direction = dirLeft;
-                        break;
-                        
-                        
-                    case 3:
-                        box[currentBox]->direction = dirRight;
-                        break;
-                        
-                    default:
-                        break;
-                }
+                    switch (intValue) {
+                        case 0:
+                            box[currentBox]->direction = dirUp;
+                            break;
+                            
+                        case 1:
+                            box[currentBox]->direction = dirDown;
+                            break;
+                            
+                            
+                        case 2:
+                            box[currentBox]->direction = dirLeft;
+                            break;
+                            
+                            
+                        case 3:
+                            box[currentBox]->direction = dirRight;
+                            break;
+                            
+                        default:
+                            break;
+                    }
                 }
                 
                 currentAction = "";
@@ -1069,8 +1001,8 @@ void SdlApplication::ConvertMessageToAction( string msg )
             if (currentAction == "y")
             {
                 if (currentBox != GUID){
-                intValue = atoi(currentValue.c_str());
-                box[currentBox]->rect.y = intValue;
+                    intValue = atoi(currentValue.c_str());
+                    box[currentBox]->rect.y = intValue;
                 }
                 currentAction = "";
                 currentValue = "";
@@ -1177,13 +1109,13 @@ void SdlApplication::ConvertMessageToAction( string msg )
             {
                 if (currentBox != GUID)
                 {
-                if (currentValue == "yes")
-                {
-                    //cout << "Turning on shoot" << endl;
-                    box[currentBox]->isShooting = true;
-                } else {
-                    box[currentBox]->isShooting = false;
-                }
+                    if (currentValue == "yes")
+                    {
+                        //cout << "Turning on shoot" << endl;
+                        box[currentBox]->isShooting = true;
+                    } else {
+                        box[currentBox]->isShooting = false;
+                    }
                 }
                 
                 currentAction = "";
@@ -1251,13 +1183,13 @@ void SdlApplication::Update( Uint32 delta )
     
     if (isClient)
     {
-    for ( int i = 0 ; i < MAX_STARS ; i++ )
-    {
-        if ( stars[i] != NULL) {
-            stars[i]->Update( delta );
+        for ( int i = 0 ; i < MAX_STARS ; i++ )
+        {
+            if ( stars[i] != NULL) {
+                stars[i]->Update( delta );
+            }
         }
-    }
-    
+        
     }
     
     
@@ -1298,25 +1230,25 @@ void SdlApplication::Update( Uint32 delta )
     bullet::Box::yOff = Box::yOff;
     
     
-//    if (isClient)
-//    {
-//    if (playerBox->rect.x + playerBox->rect.w > SCREEN_WIDTH){
-//        playerBox->rect.x = SCREEN_WIDTH - playerBox->rect.w;
-//    }
-//    
-//    if (playerBox->rect.x < 0){
-//        playerBox->rect.x = 0;
-//    }
-//    
-//    
-//    if (playerBox->rect.y  + playerBox->rect.h > SCREEN_HEIGHT){
-//        playerBox->rect.y = SCREEN_HEIGHT - playerBox->rect.h;
-//    }
-//    
-//    if (playerBox->rect.y < 0){
-//        playerBox->rect.y = 0;
-//    }
-//    }
+    //    if (isClient)
+    //    {
+    //    if (playerBox->rect.x + playerBox->rect.w > SCREEN_WIDTH){
+    //        playerBox->rect.x = SCREEN_WIDTH - playerBox->rect.w;
+    //    }
+    //
+    //    if (playerBox->rect.x < 0){
+    //        playerBox->rect.x = 0;
+    //    }
+    //
+    //
+    //    if (playerBox->rect.y  + playerBox->rect.h > SCREEN_HEIGHT){
+    //        playerBox->rect.y = SCREEN_HEIGHT - playerBox->rect.h;
+    //    }
+    //
+    //    if (playerBox->rect.y < 0){
+    //        playerBox->rect.y = 0;
+    //    }
+    //    }
     
     
     
@@ -1325,7 +1257,7 @@ void SdlApplication::Update( Uint32 delta )
         if (box[i] != NULL )
         {
             if (box[i]->isShooting){
-            ShootBullet(box[i]->rect.x + box[i]->rect.w/2, box[i]->rect.y + box[i]->rect.h/2, box[i]->direction ,false,box[i]->color);
+                ShootBullet(box[i]->rect.x + box[i]->rect.w/2, box[i]->rect.y + box[i]->rect.h/2, box[i]->direction ,false,box[i]->color);
             }
         }
     }
@@ -1335,53 +1267,53 @@ void SdlApplication::Update( Uint32 delta )
     
     if (isClient)
     {
-    playerBox->color.r = 100;
-    playerBox->color.g = 100;
-    playerBox->color.b = 100;
-    
-    switch (GUID) {
-        case 1:
-            playerBox->color.r = 255;
-            break;
-            
-        case 2:
-            playerBox->color.g = 255;
-            break;
-       
-        case 3:
-            playerBox->color.b = 255;
-            break;
-            
-        case 4:
-            playerBox->color.r = 255;
-            playerBox->color.g = 255;
-            break;
-            
-        case 5:
-            playerBox->color.g = 255;
-            playerBox->color.b = 255;
-            break;
-            
-            
-        case 6:
-            playerBox->color.r = 255;
-            playerBox->color.b = 255;
-            break;
-            
-            
-        default:
-            playerBox->color.r = 50 * GUID;
-            playerBox->color.g = 50 * GUID;
-            playerBox->color.b = 50 * GUID;
-            break;
+        playerBox->color.r = 100;
+        playerBox->color.g = 100;
+        playerBox->color.b = 100;
+        
+        switch (GUID) {
+            case 1:
+                playerBox->color.r = 255;
+                break;
+                
+            case 2:
+                playerBox->color.g = 255;
+                break;
+                
+            case 3:
+                playerBox->color.b = 255;
+                break;
+                
+            case 4:
+                playerBox->color.r = 255;
+                playerBox->color.g = 255;
+                break;
+                
+            case 5:
+                playerBox->color.g = 255;
+                playerBox->color.b = 255;
+                break;
+                
+                
+            case 6:
+                playerBox->color.r = 255;
+                playerBox->color.b = 255;
+                break;
+                
+                
+            default:
+                playerBox->color.r = 50 * GUID;
+                playerBox->color.g = 50 * GUID;
+                playerBox->color.b = 50 * GUID;
+                break;
         }
     }
     
 }
 
-void SdlApplication::CheckBulletBounds( void )
+void SdlApplication::CheckBounds( void )
 {
-   
+    
     if ( playerBox->rect.x > HORIZONTAL_BOUNDS)
     {
         playerBox->rect.x = HORIZONTAL_BOUNDS;
@@ -1392,7 +1324,7 @@ void SdlApplication::CheckBulletBounds( void )
         playerBox->rect.x = -HORIZONTAL_BOUNDS;
     }
     
-   
+    
     if ( playerBox->rect.y < -VERTICAL_BOUNDS)
     {
         playerBox->rect.y = -VERTICAL_BOUNDS;
@@ -1404,41 +1336,41 @@ void SdlApplication::CheckBulletBounds( void )
     }
     
     
-
+    
     for ( int i = 0 ; i < MAX_STARS ; i++ )
     {
-
-            if ( stars[i]->rect.x > HORIZONTAL_BOUNDS )
-            {
-                stars[i]->rect.x = -HORIZONTAL_BOUNDS;
-                stars[i]->rect.y = rand() % VERTICAL_BOUNDS;
-
-            }
+        
+        if ( stars[i]->rect.x > HORIZONTAL_BOUNDS )
+        {
+            stars[i]->rect.x = -HORIZONTAL_BOUNDS;
+            stars[i]->rect.y = rand() % VERTICAL_BOUNDS;
             
-            if ( stars[i]->rect.x < -HORIZONTAL_BOUNDS)
-            {
-
-                stars[i]->rect.x = HORIZONTAL_BOUNDS;
-                stars[i]->rect.y = rand() % VERTICAL_BOUNDS;
-            }
+        }
+        
+        if ( stars[i]->rect.x < -HORIZONTAL_BOUNDS)
+        {
             
-            
-            if ( stars[i]->rect.y > VERTICAL_BOUNDS )
-            {
-                stars[i]->rect.y = -VERTICAL_BOUNDS ;
-                stars[i]->rect.x = rand() % HORIZONTAL_BOUNDS;
-            }
-            
-            if ( stars[i]->rect.y < -VERTICAL_BOUNDS )
-            {
-                stars[i]->rect.y = VERTICAL_BOUNDS ;
-                stars[i]->rect.x = rand() % HORIZONTAL_BOUNDS;
-            }
+            stars[i]->rect.x = HORIZONTAL_BOUNDS;
+            stars[i]->rect.y = rand() % VERTICAL_BOUNDS;
+        }
+        
+        
+        if ( stars[i]->rect.y > VERTICAL_BOUNDS )
+        {
+            stars[i]->rect.y = -VERTICAL_BOUNDS ;
+            stars[i]->rect.x = rand() % HORIZONTAL_BOUNDS;
+        }
+        
+        if ( stars[i]->rect.y < -VERTICAL_BOUNDS )
+        {
+            stars[i]->rect.y = VERTICAL_BOUNDS ;
+            stars[i]->rect.x = rand() % HORIZONTAL_BOUNDS;
+        }
         
     }
     
     
-
+    
     
     
 }
@@ -1455,7 +1387,7 @@ void SdlApplication::ShootBullet( int x , int y , dir direction , bool friendly,
     bullets[availableBullet]->rect.x = x;
     bullets[availableBullet]->rect.y = y;
     
-
+    
     bullets[availableBullet]->color.r = color.r;
     bullets[availableBullet]->color.g = color.g;
     bullets[availableBullet]->color.b = color.b;
@@ -1475,19 +1407,19 @@ void SdlApplication::CheckBulletCollisions( void )
     for (int i = 0 ;  i < MAX_BULLETS; i++) {
         if (bullets[i] != NULL)
         {
-        if (!bullets[i]->isFriendly)
-        {
-            SDL_Rect intersect;
-            if (SDL_IntersectRect(&bullets[i]->rect, &playerBox->rect, &intersect) == SDL_TRUE)
+            if (!bullets[i]->isFriendly)
             {
-                cout << "collision" << endl;
-                playerBox->rect.x = finalXOff + rand() % 1000;
-                playerBox->rect.y = finalYOff + rand() % 1000;
-                
-                sndMsg[0] =  sndMsg[0] + "y." + std::to_string(playerBox->rect.y) + ";";
-                sndMsg[0] =  sndMsg[0] + "x." + std::to_string(playerBox->rect.x) + ";";
+                SDL_Rect intersect;
+                if (SDL_IntersectRect(&bullets[i]->rect, &playerBox->rect, &intersect) == SDL_TRUE)
+                {
+                    cout << "collision" << endl;
+                    playerBox->rect.x = finalXOff + rand() % 1000;
+                    playerBox->rect.y = finalYOff + rand() % 1000;
+                    
+                    sndMsg[0] =  sndMsg[0] + "y." + std::to_string(playerBox->rect.y) + ";";
+                    sndMsg[0] =  sndMsg[0] + "x." + std::to_string(playerBox->rect.x) + ";";
+                }
             }
-        }
         }
     }
 }
@@ -1496,10 +1428,6 @@ void SdlApplication::CheckBulletCollisions( void )
 
 void SdlApplication::CalculateFrameDistance( void )
 {
-//    farBottom = 0;
-//    farTop = 0;
-//    farLeft = 0;
-//    farRight = 0;
     scale = 1;
     
     
@@ -1512,7 +1440,7 @@ void SdlApplication::CalculateFrameDistance( void )
     {
         if (isClient)
         {
-
+            
             leftBox = playerBox;
             rightBox = playerBox;
             topBox = playerBox;
@@ -1525,62 +1453,46 @@ void SdlApplication::CalculateFrameDistance( void )
         
         totalBoxes = 0;
         
-    for ( int i = 0 ; i < MAX_CLIENTS ; i++ )
-    {
-        if (box[i] != NULL)
+        for ( int i = 0 ; i < MAX_CLIENTS ; i++ )
         {
-            //cout << "Real box" << endl;
-            noBoxes = false;
-            totalBoxes++;
-            if (box[i]->rect.x > rightBox->rect.x)
+            if (box[i] != NULL)
             {
-                rightBox = box[i];
-            }
-            
-            if (box[i]->rect.x < leftBox->rect.x)
-            {
-                leftBox = box[i];
-            }
-            
-            if (box[i]->rect.y > bottomBox->rect.y)
-            {
-                bottomBox = box[i];
-            }
-            
-            if (box[i]->rect.y < topBox->rect.y)
-            {
-                topBox = box[i];
+                //cout << "Real box" << endl;
+                noBoxes = false;
+                totalBoxes++;
+                if (box[i]->rect.x > rightBox->rect.x)
+                {
+                    rightBox = box[i];
+                }
+                
+                if (box[i]->rect.x < leftBox->rect.x)
+                {
+                    leftBox = box[i];
+                }
+                
+                if (box[i]->rect.y > bottomBox->rect.y)
+                {
+                    bottomBox = box[i];
+                }
+                
+                if (box[i]->rect.y < topBox->rect.y)
+                {
+                    topBox = box[i];
+                }
             }
         }
-    }
         
-        
-    
-    farWidth = farRight - farLeft;
-    farHeight = farBottom - farTop;
-    
-        // cout << "Far Width: " << farWidth << endl;
-        // cout << "Far Height: " << farHeight << endl;
 
-
-//                    cout << "Top: " << farTop << endl;
-//                    cout << "Bottom: " << farBottom << endl;
-//                    cout << "Right: " << farRight << endl;
-//                    cout << "Left: " << farLeft << endl;
-        
-        //point farright,farbottom  / farleft,fartop
- 
-        
         distance = sqrtf(  pow((leftBox->rect.x - rightBox->rect.x),2)  + pow((topBox->rect.y - bottomBox->rect.y),2) );
-    
-//        cout << "Dist: " << distance << endl;
+        
+        //        cout << "Dist: " << distance << endl;
         
         scale = 100 / (distance);
         
-//        if (distance < 0 )
-//        {
-//            distance = .0000001;
-//        }
+        //        if (distance < 0 )
+        //        {
+        //            distance = .0000001;
+        //        }
         
         
         if (noBoxes) {
@@ -1591,21 +1503,21 @@ void SdlApplication::CalculateFrameDistance( void )
         
         
         finalXOff = (leftBox->rect.x) - (SCREEN_WIDTH  * (distance/1000)) - (SCREEN_WIDTH/2) * (distance/10000);
-
-
+        
+        
         finalYOff = (topBox->rect.y - topBox->rect.h) - (SCREEN_HEIGHT * (distance/1000)) - (SCREEN_HEIGHT/2) * (distance/10000);
         
-    
-//        if (scale <= 0){
-//            scale = 1;
-//        }
-//        
+        
+        //        if (scale <= 0){
+        //            scale = 1;
+        //        }
+        //        
         if (scale > 5)
         {
             scale = 5;
         }
         
-//    cout << "Scale :" << scale << endl;
+        //    cout << "Scale :" << scale << endl;
     }
     
 }

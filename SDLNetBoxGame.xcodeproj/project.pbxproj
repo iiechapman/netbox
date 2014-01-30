@@ -11,22 +11,14 @@
 		4E9618A0188F03F0007C5567 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E96189F188F03F0007C5567 /* main.cpp */; };
 		4E9618B4188F04A9007C5567 /* Box.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E9618B2188F04A9007C5567 /* Box.cpp */; };
 		4E9618B8188F72C3007C5567 /* SDL2_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9618B5188F72C3007C5567 /* SDL2_net.framework */; };
-		4E9618B9188F72C3007C5567 /* SDL2_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9618B5188F72C3007C5567 /* SDL2_net.framework */; };
 		4E9618BC188F72C3007C5567 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9618B7188F72C3007C5567 /* SDL2.framework */; };
-		4E9618BD188F72C3007C5567 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9618B7188F72C3007C5567 /* SDL2.framework */; };
+		4EB5F7391899F6F700B30B56 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EB5F7381899F6F700B30B56 /* SDL2_image.framework */; };
+		4EB5F743189AD8B000B30B56 /* Server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4EB5F741189AD8B000B30B56 /* Server.cpp */; };
+		4EB5F746189AE7F900B30B56 /* Client.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4EB5F744189AE7F900B30B56 /* Client.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		4E96189A188F03F0007C5567 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-		4E9618A8188F03FD007C5567 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -42,11 +34,16 @@
 		4E8D6CBB18919D6800442372 /* bullet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bullet.h; sourceTree = "<group>"; };
 		4E96189C188F03F0007C5567 /* SDLNetBoxGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SDLNetBoxGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E96189F188F03F0007C5567 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		4E9618AA188F03FD007C5567 /* SDLBoxGameServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SDLBoxGameServer; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E9618B2188F04A9007C5567 /* Box.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Box.cpp; sourceTree = "<group>"; };
 		4E9618B3188F04A9007C5567 /* Box.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Box.h; sourceTree = "<group>"; };
 		4E9618B5188F72C3007C5567 /* SDL2_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2_net.framework; sourceTree = "<group>"; };
 		4E9618B7188F72C3007C5567 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
+		4EB5F7381899F6F700B30B56 /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2_image.framework; sourceTree = "<group>"; };
+		4EB5F73A1899F71F00B30B56 /* Ship1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Ship1.png; sourceTree = "<group>"; };
+		4EB5F741189AD8B000B30B56 /* Server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Server.cpp; sourceTree = "<group>"; };
+		4EB5F742189AD8B000B30B56 /* Server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Server.h; sourceTree = "<group>"; };
+		4EB5F744189AE7F900B30B56 /* Client.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Client.cpp; sourceTree = "<group>"; };
+		4EB5F745189AE7F900B30B56 /* Client.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Client.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,17 +51,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4EB5F7391899F6F700B30B56 /* SDL2_image.framework in Frameworks */,
 				4E9618BC188F72C3007C5567 /* SDL2.framework in Frameworks */,
 				4E9618B8188F72C3007C5567 /* SDL2_net.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4E9618A7188F03FD007C5567 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4E9618BD188F72C3007C5567 /* SDL2.framework in Frameworks */,
-				4E9618B9188F72C3007C5567 /* SDL2_net.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,7 +65,6 @@
 			children = (
 				4E9618B1188F049B007C5567 /* Shared */,
 				4E96189E188F03F0007C5567 /* SDLNetBoxGame */,
-				4E9618AB188F03FD007C5567 /* SDLBoxGameServer */,
 				4E96189D188F03F0007C5567 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -85,7 +73,6 @@
 			isa = PBXGroup;
 			children = (
 				4E96189C188F03F0007C5567 /* SDLNetBoxGame.app */,
-				4E9618AA188F03FD007C5567 /* SDLBoxGameServer */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -99,22 +86,21 @@
 			path = SDLNetBoxGameClient;
 			sourceTree = "<group>";
 		};
-		4E9618AB188F03FD007C5567 /* SDLBoxGameServer */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = SDLBoxGameServer;
-			sourceTree = "<group>";
-		};
 		4E9618B1188F049B007C5567 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				4EB5F7381899F6F700B30B56 /* SDL2_image.framework */,
 				4E9618B5188F72C3007C5567 /* SDL2_net.framework */,
 				4E9618B7188F72C3007C5567 /* SDL2.framework */,
 				4E9618B2188F04A9007C5567 /* Box.cpp */,
 				4E9618B3188F04A9007C5567 /* Box.h */,
 				4E8D6CBA18919D6800442372 /* bullet.cpp */,
+				4EB5F73A1899F71F00B30B56 /* Ship1.png */,
 				4E8D6CBB18919D6800442372 /* bullet.h */,
+				4EB5F741189AD8B000B30B56 /* Server.cpp */,
+				4EB5F742189AD8B000B30B56 /* Server.h */,
+				4EB5F744189AE7F900B30B56 /* Client.cpp */,
+				4EB5F745189AE7F900B30B56 /* Client.h */,
 			);
 			name = Shared;
 			sourceTree = "<group>";
@@ -139,23 +125,6 @@
 			productReference = 4E96189C188F03F0007C5567 /* SDLNetBoxGame.app */;
 			productType = "com.apple.product-type.application";
 		};
-		4E9618A9188F03FD007C5567 /* SDLBoxGameServer */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 4E9618AE188F03FD007C5567 /* Build configuration list for PBXNativeTarget "SDLBoxGameServer" */;
-			buildPhases = (
-				4E9618A6188F03FD007C5567 /* Sources */,
-				4E9618A7188F03FD007C5567 /* Frameworks */,
-				4E9618A8188F03FD007C5567 /* CopyFiles */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = SDLBoxGameServer;
-			productName = SDLBoxGameServer;
-			productReference = 4E9618AA188F03FD007C5567 /* SDLBoxGameServer */;
-			productType = "com.apple.product-type.tool";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -178,7 +147,6 @@
 			projectRoot = "";
 			targets = (
 				4E96189B188F03F0007C5567 /* SDLNetBoxGame */,
-				4E9618A9188F03FD007C5567 /* SDLBoxGameServer */,
 			);
 		};
 /* End PBXProject section */
@@ -190,14 +158,9 @@
 			files = (
 				4E9618A0188F03F0007C5567 /* main.cpp in Sources */,
 				4E8D6CBC18919D6800442372 /* bullet.cpp in Sources */,
+				4EB5F746189AE7F900B30B56 /* Client.cpp in Sources */,
+				4EB5F743189AD8B000B30B56 /* Server.cpp in Sources */,
 				4E9618B4188F04A9007C5567 /* Box.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4E9618A6188F03FD007C5567 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,68 +289,6 @@
 			};
 			name = Release;
 		};
-		4E9618AF188F03FD007C5567 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				FRAMEWORK_SEARCH_PATHS = (
-					/Library/Frameworks,
-					/Users/evanchapman/Documents/Dev/Xcode/SDLNetBoxGameClient,
-				);
-				GCC_C_LANGUAGE_STANDARD = c11;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				HEADER_SEARCH_PATHS = (
-					/opt/local/include,
-					/usr/include,
-					/usr/local/include,
-				);
-				LIBRARY_SEARCH_PATHS = (
-					/opt/local/lib,
-					/usr/lib,
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					cocoa,
-					"-framework",
-					SDL2,
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "";
-			};
-			name = Debug;
-		};
-		4E9618B0188F03FD007C5567 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				FRAMEWORK_SEARCH_PATHS = (
-					/Library/Frameworks,
-					/Users/evanchapman/Documents/Dev/Xcode/SDLNetBoxGameClient,
-				);
-				GCC_C_LANGUAGE_STANDARD = c11;
-				HEADER_SEARCH_PATHS = (
-					/opt/local/include,
-					/usr/include,
-					/usr/local/include,
-				);
-				LIBRARY_SEARCH_PATHS = (
-					/opt/local/lib,
-					/usr/lib,
-				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					cocoa,
-					"-framework",
-					SDL2,
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -405,15 +306,6 @@
 			buildConfigurations = (
 				4E9618A4188F03F0007C5567 /* Debug */,
 				4E9618A5188F03F0007C5567 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		4E9618AE188F03FD007C5567 /* Build configuration list for PBXNativeTarget "SDLBoxGameServer" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				4E9618AF188F03FD007C5567 /* Debug */,
-				4E9618B0188F03FD007C5567 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
