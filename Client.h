@@ -9,6 +9,22 @@
 #ifndef __SDLNetBoxGame__Client__
 #define __SDLNetBoxGame__Client__
 
-#include <iostream>
+#include "CommonIncludes.h"
+
+/*
+ ===============================================================================
+ 
+ Client
+ Client handles wrapping important information up and sending it to a respective server
+ Also handles receiving messages from a server and turning those into messages
+ 
+ ===============================================================================
+ */
+
+
+
+
+
+
 
 #endif /* defined(__SDLNetBoxGame__Client__) */

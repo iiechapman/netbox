@@ -8,11 +8,22 @@
 
 #ifndef __SDLNetBoxGame__Server__
 #define __SDLNetBoxGame__Server__
-#include <SDL2/SDL.h>
+
+#include "CommonIncludes.h"
 #include <SDL2_net/SDL_net.h>
-#include <string>
-#include <iostream>
+
 using namespace std;
+
+/*
+ ===============================================================================
+ 
+ Server
+ Handles clients joining and leaving, receiving and sending messages to clients,
+ as well as broadcast client messages to all clients
+ 
+ ===============================================================================
+ */
+
 
 struct ClientSocket{
     TCPsocket socket;
@@ -42,7 +53,9 @@ private:
     const bool              SendMessage( TCPsocket receiver , string msg);
     
     static const int        MAX_CLIENTS = 20;
-    static const int        NEW_CLIENT_TIMEOUT = 10;
+    static const int        NEW_CLIENT_TIMEOUT = 20;
+    static const int        MESSAGE_RECEIVE_TIMEOUT = 10;
+    static const int        SEND_MAX = 100000;
     
     bool                    mIsOnline;
     

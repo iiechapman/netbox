@@ -41,8 +41,26 @@ Server::~Server()
  */
 void Server::BroadcastToClients()
 {
-    
+    if ( mTotalClients > 0 )
+    {
+        for ( int i = 0 ; i < MAX_CLIENTS ; i++ )
+        {
+            ///TODO: read from array of objects and convert state to string, then bundle string in message to send to all clients
+        }
+        
+        //Send state message to all clients
+        for (int clientNum = 0 ; clientNum < mTotalClients ; clientNum++ )
+        {
+            if ( !mClient[ clientNum ].isFree )
+            {
+                SendMessage( mClient[ clientNum ].socket, mMsgToSend );
+            }
+        }
+    }
+    mMsgToSend = ""; //Clear state message if not needed
 }
+
+
 
 /*
  ====================
@@ -51,8 +69,38 @@ void Server::BroadcastToClients()
  */
 void Server::CheckForClientData()
 {
+    int numActiveSockets = SDLNet_CheckSockets( mListenSet, MESSAGE_RECEIVE_TIMEOUT );
     
+    if ( numActiveSockets > 0 )
+    {
+        for ( int i = 0 ; i < MAX_CLIENTS ; i++ )
+        {
+            if ( !mClient[ i ].isFree )
+            {
+                int clientActivity = SDLNet_SocketReady( mClient[ i ].socket);
+                if ( clientActivity )
+                {
+                    int dataReceived = SDLNet_TCP_Recv( mClient[ i ].socket, &mMsgReceived, SEND_MAX);
+                    
+                    if ( dataReceived <= 0 )//Client disconnected
+                    {
+                        cout << "Client Disconnected..." << endl;
+                        SDLNet_TCP_DelSocket( mListenSet , mClient[ i ].socket );
+                        SDLNet_TCP_Close( mClient[ i ].socket );
+                        mClient[ i ].socket = NULL;
+                        mClient[ i ].isFree = true;
+                        mTotalClients--;
+                        cout << "Total clients " << mTotalClients << "..." << endl;
+                    } else
+                    {
+                        ///TODO: Add message to action queue
+                    }
+                }
+            }
+        }
+    }
 }
+
 
 
 /*
@@ -88,14 +136,23 @@ void Server::CheckForNewClient()///<Checks if new client connected
                         break;
                     }
                 }
+                cout << "Assigning client new spot on server..." << endl;
+                mClient[freespot].socket = SDLNet_TCP_Accept( mListenSocket );
+                SDLNet_TCP_AddSocket(mListenSet , mClient[ freespot ].socket );
+                mTotalClients++;
+                
+                mMsgToSend = "accept." + std::to_string( mTotalClients );
+                SendMessage( mClient[ freespot ].socket ,  mMsgToSend );
+                cout << "Accepted new client to spot " << mTotalClients << endl;
             } else //No Free spots, reject client
             {
                 cout << "Rejected client due to no free spots..." << endl;
-                mMsgToSend = "reject";
+                mMsgToSend = "reject.0";
                 
                 //Connect to client
                 TCPsocket tempClient = SDLNet_TCP_Accept( mListenSocket );
                 SendMessage( tempClient , mMsgToSend );
+                SDLNet_TCP_Close(tempClient);
             }
         }
     }
@@ -109,12 +166,14 @@ void Server::CheckForNewClient()///<Checks if new client connected
  */
 const bool Server::SendMessage( TCPsocket receiver , string msg)
 {
-    
-    SDLNet_TCP_Send( receiver ,
-                    msg.c_str() ,
-                    static_cast<unsigned int>( msg.length()));
-    
-    
+    //Send message, if message isnt sent correctly, return false
+    if ( SDLNet_TCP_Send(
+                         receiver ,
+                         msg.c_str() ,
+                         static_cast<unsigned int>( msg.length())) < static_cast<unsigned int>( msg.length()))
+    {
+        return false;
+    }
     
     return true;
 }

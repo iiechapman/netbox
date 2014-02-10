@@ -28,6 +28,24 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "4ED3652A18A810A6007A6410"
+               BuildableName = "SDLNetBoxGame Tests.xctest"
+               BlueprintName = "SDLNetBoxGame Tests"
+               ReferencedContainer = "container:SDLNetBoxGame.xcodeproj">
+            </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "SDLNetBoxGame_Tests">
+               </Test>
+               <Test
+                  Identifier = "TestUnit1">
+               </Test>
+            </SkippedTests>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

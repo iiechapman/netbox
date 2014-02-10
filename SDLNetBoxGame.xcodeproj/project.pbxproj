@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4E2C75B718A9472000D9EEC8 /* CommonIncludes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E2C75B518A9472000D9EEC8 /* CommonIncludes.cpp */; };
 		4E8D6CBC18919D6800442372 /* bullet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E8D6CBA18919D6800442372 /* bullet.cpp */; };
 		4E9618A0188F03F0007C5567 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E96189F188F03F0007C5567 /* main.cpp */; };
 		4E9618B4188F04A9007C5567 /* Box.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4E9618B2188F04A9007C5567 /* Box.cpp */; };
@@ -30,6 +31,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4E2C75B518A9472000D9EEC8 /* CommonIncludes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CommonIncludes.cpp; sourceTree = "<group>"; };
+		4E2C75B618A9472000D9EEC8 /* CommonIncludes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonIncludes.h; sourceTree = "<group>"; };
 		4E8D6CBA18919D6800442372 /* bullet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bullet.cpp; sourceTree = "<group>"; };
 		4E8D6CBB18919D6800442372 /* bullet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bullet.h; sourceTree = "<group>"; };
 		4E96189C188F03F0007C5567 /* SDLNetBoxGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SDLNetBoxGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -44,6 +47,12 @@
 		4EB5F742189AD8B000B30B56 /* Server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Server.h; sourceTree = "<group>"; };
 		4EB5F744189AE7F900B30B56 /* Client.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Client.cpp; sourceTree = "<group>"; };
 		4EB5F745189AE7F900B30B56 /* Client.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Client.h; sourceTree = "<group>"; };
+		4ED3653118A810A6007A6410 /* SDLNetBoxGame Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SDLNetBoxGame Tests-Info.plist"; sourceTree = "<group>"; };
+		4ED3653318A810A6007A6410 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4ED3653518A810A6007A6410 /* SDLNetBoxGame_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SDLNetBoxGame_Tests.m; sourceTree = "<group>"; };
+		4ED3653718A810A6007A6410 /* SDLNetBoxGame Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SDLNetBoxGame Tests-Prefix.pch"; sourceTree = "<group>"; };
+		4ED3653D18A810B6007A6410 /* TestUnit1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestUnit1.m; path = ../TestUnit1.m; sourceTree = "<group>"; };
+		4ED3654018A810FD007A6410 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,11 +69,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4E2C75B418A945AC00D9EEC8 /* assetts */ = {
+			isa = PBXGroup;
+			children = (
+				4EB5F73A1899F71F00B30B56 /* Ship1.png */,
+			);
+			name = assetts;
+			sourceTree = "<group>";
+		};
 		4E961893188F03F0007C5567 = {
 			isa = PBXGroup;
 			children = (
-				4E9618B1188F049B007C5567 /* Shared */,
+				4E2C75B418A945AC00D9EEC8 /* assetts */,
+				4E9618B1188F049B007C5567 /* src */,
 				4E96189E188F03F0007C5567 /* SDLNetBoxGame */,
+				4ED3652F18A810A6007A6410 /* SDLNetBoxGame Tests */,
+				4ED3652C18A810A6007A6410 /* Frameworks */,
 				4E96189D188F03F0007C5567 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -86,23 +106,52 @@
 			path = SDLNetBoxGameClient;
 			sourceTree = "<group>";
 		};
-		4E9618B1188F049B007C5567 /* Shared */ = {
+		4E9618B1188F049B007C5567 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				4EB5F7381899F6F700B30B56 /* SDL2_image.framework */,
-				4E9618B5188F72C3007C5567 /* SDL2_net.framework */,
-				4E9618B7188F72C3007C5567 /* SDL2.framework */,
 				4E9618B2188F04A9007C5567 /* Box.cpp */,
 				4E9618B3188F04A9007C5567 /* Box.h */,
+				4E2C75B518A9472000D9EEC8 /* CommonIncludes.cpp */,
+				4E2C75B618A9472000D9EEC8 /* CommonIncludes.h */,
 				4E8D6CBA18919D6800442372 /* bullet.cpp */,
-				4EB5F73A1899F71F00B30B56 /* Ship1.png */,
 				4E8D6CBB18919D6800442372 /* bullet.h */,
 				4EB5F741189AD8B000B30B56 /* Server.cpp */,
 				4EB5F742189AD8B000B30B56 /* Server.h */,
 				4EB5F744189AE7F900B30B56 /* Client.cpp */,
 				4EB5F745189AE7F900B30B56 /* Client.h */,
 			);
-			name = Shared;
+			name = src;
+			sourceTree = "<group>";
+		};
+		4ED3652C18A810A6007A6410 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4EB5F7381899F6F700B30B56 /* SDL2_image.framework */,
+				4E9618B5188F72C3007C5567 /* SDL2_net.framework */,
+				4E9618B7188F72C3007C5567 /* SDL2.framework */,
+				4ED3654018A810FD007A6410 /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4ED3652F18A810A6007A6410 /* SDLNetBoxGame Tests */ = {
+			isa = PBXGroup;
+			children = (
+				4ED3653D18A810B6007A6410 /* TestUnit1.m */,
+				4ED3653518A810A6007A6410 /* SDLNetBoxGame_Tests.m */,
+				4ED3653018A810A6007A6410 /* Supporting Files */,
+			);
+			path = "SDLNetBoxGame Tests";
+			sourceTree = "<group>";
+		};
+		4ED3653018A810A6007A6410 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4ED3653118A810A6007A6410 /* SDLNetBoxGame Tests-Info.plist */,
+				4ED3653218A810A6007A6410 /* InfoPlist.strings */,
+				4ED3653718A810A6007A6410 /* SDLNetBoxGame Tests-Prefix.pch */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -159,12 +208,24 @@
 				4E9618A0188F03F0007C5567 /* main.cpp in Sources */,
 				4E8D6CBC18919D6800442372 /* bullet.cpp in Sources */,
 				4EB5F746189AE7F900B30B56 /* Client.cpp in Sources */,
+				4E2C75B718A9472000D9EEC8 /* CommonIncludes.cpp in Sources */,
 				4EB5F743189AD8B000B30B56 /* Server.cpp in Sources */,
 				4E9618B4188F04A9007C5567 /* Box.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		4ED3653218A810A6007A6410 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4ED3653318A810A6007A6410 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		4E9618A1188F03F0007C5567 /* Debug */ = {
@@ -241,6 +302,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					/Library/Frameworks,
 					/Users/evanchapman/Documents/Dev/Xcode/SDLNetBoxGameClient,
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				HEADER_SEARCH_PATHS = (
 					/opt/local/include,
@@ -268,6 +330,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					/Library/Frameworks,
 					/Users/evanchapman/Documents/Dev/Xcode/SDLNetBoxGameClient,
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				HEADER_SEARCH_PATHS = (
 					/opt/local/include,

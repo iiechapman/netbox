@@ -9,9 +9,9 @@
 #ifndef __SDLNetBoxGame__bullet__
 #define __SDLNetBoxGame__bullet__
 
-#include <iostream>
-#include <SDL2/SDL.h>
-#include <string>
+#include "CommonIncludes.h"
+
+
 #include "Box.h"
 using namespace std;
 
@@ -20,10 +20,7 @@ class bullet : public Box {
 public:
                         bullet();
                         ~bullet();
-    void                Update( Uint32 delta);
     
-    dir                 direction;
-    float               speed;
     bool                isFriendly;
     
 private:

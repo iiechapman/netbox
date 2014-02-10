@@ -14,34 +14,99 @@ float         Box::xOff = 0;
 float         Box::yOff = 0;
 
 Box::Box(){
-    color.r = 155;
-    color.g = 105;
-    color.b = 155;
-    color.a = 255;
+    mRect = new SDL_Rect;
+    mColor.r = 200;
+    mColor.g = 200;
+    mColor.b = 200;
+    mColor.a = 255;
     
-    rect.x = 10;
-    rect.y = 10;
-    rect.w = 300;
-    rect.h = 300;
+    mRect->x = 10;
+    mRect->y = 10;
+    mRect->w = 300;
+    mRect->h = 300;
     
-    direction = dirRight;
-    isShooting = false;
+    mCurrentSpeed = 0;
     
+    StopShooting();
+    StopMoving();
+}
+
+
+void Box::Update( Uint32 delta )
+{
+    if ( IsOnline() )
+    {
+    if ( mIsMoving )
+    {
+        if (mCurrentSpeed < mMaxSpeed )
+        {
+            mCurrentSpeed += mAccelSpeed;
+        }
+        
+        if (mCurrentSpeed >= mMaxSpeed )
+        {
+            mCurrentSpeed = mMaxSpeed;
+        }
+    } else
+    {
+        mCurrentSpeed -= mDecelSpeed;
+        if (mCurrentSpeed <= 0 )
+        {
+            mDir.up     = false;
+            mDir.down   = false;
+            mDir.right  = false;
+            mDir.left   = false;
+            
+            mCurrentSpeed = 0;
+        }
+        
+    }
+
+    if ( mDir.up )
+    {
+        mRect->y -= mCurrentSpeed;
+    }
+    
+    if ( mDir.down )
+    {
+        mRect->y += mCurrentSpeed;
+    }
+    
+    if ( mDir.right )
+    {
+        mRect->x += mCurrentSpeed;
+    }
+    
+    if ( mDir.left )
+    {
+        mRect->x -= mCurrentSpeed;
+    }
+    }
+
 }
 
 
 void Box::Render()
-{
+{ 
+
+    if ( IsOnline() )
+    {
+    SDL_Rect* finalRect = new SDL_Rect;
     
-    SDL_Rect finalRect = rect;
+    finalRect->x = mRect->x;
+    finalRect->y = mRect->y;
     
-    finalRect.x -= xOff;
-    finalRect.y -= yOff;
+    finalRect->w = mRect->w;
+    finalRect->h = mRect->h;
     
-    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
-    SDL_RenderFillRect(renderer, &finalRect);
+    finalRect->x -= xOff;
+    finalRect->y -= yOff;
+    
+    SDL_SetRenderDrawColor(renderer, mColor.r,mColor.g, mColor.b, mColor.a);
+    SDL_RenderFillRect(renderer, finalRect);
     
     SDL_SetRenderDrawColor(renderer,255,255,255,255);
-    SDL_RenderDrawRect(renderer, &finalRect);
+    SDL_RenderDrawRect(renderer, finalRect);
+    }
 }
 
